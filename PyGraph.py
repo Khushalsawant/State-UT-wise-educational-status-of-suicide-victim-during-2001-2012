@@ -11,6 +11,10 @@ import base64
 import pandas as pd
 from datetime import datetime
 import numpy as np
+import time
+
+
+start_time = time.time()
 
 img = io.BytesIO()
 plt.style.use('ggplot')
@@ -23,51 +27,55 @@ path_of_input_file = "C:/Users/khushal/Documents/Python Scripts/StateUT-wise edu
 input_data_df = pd.read_excel(path_of_input_file)
 #input_data_df['Year'] = pd.to_datetime(input_data_df['Year'], format='%Y')
 input_data_df['Year'].apply(pd.to_datetime)
-input_data_df_MH = input_data_df[input_data_df['STATE/UT'] =='MAHARASHTRA'].drop(columns=['Male', 'Female'],axis=1) #["STATE/UT","Year","CAUSE","Total"]
-#input_data_df_MH['Year'].apply(pd.to_datetime)
-#print(input_data_df_MH.columns)
-#print(input_data_df_MH.head())
-number_of_years = input_data_df_MH['Year'].unique().tolist()
-#print(number_of_years)
-MH_Max_cases_per_year_df = pd.DataFrame()
+Total_number_of_States = input_data_df['STATE/UT'].unique().tolist()
 
-for i in number_of_years:
-    df = input_data_df_MH[input_data_df_MH['Year'] ==i]
-    #print("min Total value = ",df['Total'].max())
-    MH_Max_cases_per_year_df = MH_Max_cases_per_year_df.append(df[df['Total']==df['Total'].max()],ignore_index = True)
-    df.drop(df[df.Total < 50].index,inplace=True)
-    #print(df)
-    explodeTuple = np.zeros(len(df))
-    lst = list(explodeTuple)
-    lst[0] = 0.15
-    explodeTuple = tuple(lst)
-    #print(explodeTuple)
-    #colors = ["#E13F29", "#D69A80", "#D63B59", "#AE5552", "#CB5C3B", "#EB8076", "#96624E","#BE624E"]
-    colors= ['gold', 'yellowgreen', 'lightcoral', 'lightskyblue','red','green','orange']
-    # Create a pie chart
-    plt.pie(
-            # using data total)arrests
-            df['Total'],
-            # with the labels being officer names
-            labels=df['CAUSE'],
-            # with no shadows
-            shadow=True,
-            # with colors
-            #colors=colors,
-            # with one slide exploded out
-            #explode=explodeTuple,
-            # with the start angle at 90%
-            startangle=90,
-            radius=15,  labeldistance=1.0,
-            # with the percent listed as a fraction
-            autopct='%1.1f%%',
-            rotatelabels = 120,
-            counterclock=False
-            )
-    # View the plot drop above
-    plt.axis('equal')
-    # View the plot
-    plt.tight_layout()
-    plt.show()
-    
-print(MH_Max_cases_per_year_df)
+for j in Total_number_of_States:
+    #input_data_df_MH = input_data_df[input_data_df['STATE/UT'] =='MAHARASHTRA'].drop(columns=['Male', 'Female'],axis=1) #["STATE/UT","Year","CAUSE","Total"]
+    input_data_df_MH = input_data_df[input_data_df['STATE/UT'] ==j].drop(columns=['Male', 'Female'],axis=1) #["STATE/UT","Year","CAUSE","Total"]
+    #input_data_df_MH['Year'].apply(pd.to_datetime)
+    #print(input_data_df_MH.columns)
+    #print(input_data_df_MH.head())
+    number_of_years = input_data_df_MH['Year'].unique().tolist()
+    #print(number_of_years)
+    MH_Max_cases_per_year_df = pd.DataFrame()
+    for i in number_of_years:
+        df = input_data_df_MH[input_data_df_MH['Year'] ==i]
+        #print("min Total value = ",df['Total'].max())
+        MH_Max_cases_per_year_df = MH_Max_cases_per_year_df.append(df[df['Total']==df['Total'].max()],ignore_index = True)
+        df.drop(df[df.Total < 50].index,inplace=True)
+        #print(df)
+        #explodeTuple = np.zeros(len(df))
+        #lst = list(explodeTuple)
+        #lst[0] = 0.15
+        #explodeTuple = tuple(lst)
+        #print(explodeTuple)
+        #colors = ["#E13F29", "#D69A80", "#D63B59", "#AE5552", "#CB5C3B", "#EB8076", "#96624E","#BE624E"]
+        colors= ['gold', 'yellowgreen', 'lightcoral', 'lightskyblue','red','green','orange']
+        # Create a pie chart
+        plt.pie(
+                # using data total)arrests
+                df['Total'],
+                # with the labels being officer names
+                labels=df['CAUSE'],
+                # with no shadows
+                shadow=True,
+                # with colors
+                #colors=colors,
+                # with one slide exploded out
+                #explode=explodeTuple,
+                # with the start angle at 90%
+                startangle=90,
+                radius=15,  labeldistance=1.0,
+                # with the percent listed as a fraction
+                autopct='%1.1f%%',
+                rotatelabels = 120,
+                counterclock=False
+                )
+        # View the plot drop above
+        plt.axis('equal')
+        # View the plot
+        plt.tight_layout()
+        plt.show()
+    print(MH_Max_cases_per_year_df)
+
+print("--- %s  = Total execution time seconds ---" % (time.time() - start_time))
